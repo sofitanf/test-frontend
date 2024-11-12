@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const data = [
   { id: 1, country: 'United States' },
@@ -60,6 +60,7 @@ function Soal2() {
   const enterPress = useKeyPress('Enter');
   const [cursor, setCursor] = useState<number>(0);
   const [hovered, setHovered] = useState<{ id: number; country: string }>();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (openOption && downPress) {
@@ -88,6 +89,26 @@ function Soal2() {
     }
   }, [hovered]);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setOpenOption(false);
+    }
+  };
+
+  useEffect(() => {
+    if (openOption) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openOption]);
+
   return (
     <div
       style={{
@@ -96,7 +117,7 @@ function Soal2() {
         paddingTop: '100px',
       }}
     >
-      <div>
+      <div ref={dropdownRef}>
         <p
           style={{
             fontSize: '18px',
