@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function Soal3() {
   /**
@@ -9,16 +9,26 @@ export default function Soal3() {
   return <SeachComponent />;
 }
 
+type Result = {
+  albumId: number;
+  id: number;
+  title: string;
+  url: string;
+  thumbnailUrl: string;
+};
+
 function SeachComponent() {
-  const [search, setSearch] = useState("");
-  const [results, setResults] = useState([]);
+  const [search, setSearch] = useState<string>('');
+  const [result, setResult] = useState<Result>();
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/photos/${search.id}`);
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/photos/${search}`
+      );
       const data = await response.json();
 
-      setResults(data);
+      setResult(data);
     }
 
     if (search) fetchData();
@@ -26,11 +36,14 @@ function SeachComponent() {
 
   return (
     <div>
-      <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." />
+      <input
+        type='text'
+        value={search}
+        onChange={(e) => setSearch(e.target.value.trim())}
+        placeholder='Search...'
+      />
       <ul>
-        {results.map((result) => (
-          <li key={result.id}>{result.name}</li>
-        ))}
+        <li>{result?.title}</li>
       </ul>
     </div>
   );
